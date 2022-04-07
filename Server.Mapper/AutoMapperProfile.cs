@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using server.Dtos;
 using server.Models;
+using Server.Core.Dtos;
 
 namespace server
 {
@@ -9,6 +10,7 @@ namespace server
         public AutoMapperProfile()
         {
             CreateMap<Category, GetCategoryDto>();
+            CreateMap<CreateCategoryDto, Category>();
             CreateMap<Ingredient, GetIngredientDto>();
             CreateMap<Recipe, GetRecipeDto>();
             CreateMap<RecipeIngredients, GetRecipeIngredientsDto>();

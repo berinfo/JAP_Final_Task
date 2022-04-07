@@ -31,7 +31,7 @@
   },
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "server.Api/1.0.0": {
+      "Server.Api/1.0.0": {
         "dependencies": {
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "11.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.2",
@@ -324,10 +324,10 @@
           "WindowsBase": "4.0.0.0"
         },
         "runtime": {
-          "server.Api.dll": {}
+          "Server.Api.dll": {}
         },
         "compile": {
-          "server.Api.dll": {}
+          "Server.Api.dll": {}
         }
       },
       "AutoMapper/11.0.1": {
@@ -3747,7 +3747,7 @@
     }
   },
   "libraries": {
-    "server.Api/1.0.0": {
+    "Server.Api/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

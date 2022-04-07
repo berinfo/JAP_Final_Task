@@ -26,6 +26,7 @@ const Recipes = () => {
   const [recipeView, setRecipeView] = useState(true);
   const [input, setInput] = useState("");
   const token = sessionStorage.getItem("token");
+  //const decodedToken = jwt_decode(token);
 
   // category id
   const { id } = useParams();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using server.Dtos;
 using server.Models;
 using server.Response;
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace server.Controllers
 {
+ //   [Authorize(Policy = "AdminAccess")]
+ [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class IngredientsController : ControllerBase

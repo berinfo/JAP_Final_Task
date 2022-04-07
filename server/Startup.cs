@@ -31,6 +31,11 @@ namespace server
             services.AddDbContext<DataContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
+            // role authorization try
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminAccess", policy => policy.RequireClaim("IsAdmin"));
+            });
             services.SwaggerSetup();
             services.AddAutoMapper(typeof(AutoMapperProfile));
             services.ServicesSetup();
