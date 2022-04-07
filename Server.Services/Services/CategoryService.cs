@@ -35,12 +35,30 @@ namespace server.Services
                 Data = dbCategories
             };
         }
+        public async Task<ServiceResponse<GetCategoryDto>> GetCategory(int id)
+        {
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+
+            if(category == null)
+                throw new ArgumentNullException(nameof(category));
+
+            return new ServiceResponse<GetCategoryDto>()
+            {
+                Data = _mapper.Map<GetCategoryDto>(category),
+                Success = true
+            };
+        }
 
         public async Task<ServiceResponse<GetCategoryDto>> CreateCategory(CreateCategoryDto newCategory)
         {
             var addedCategory = _mapper.Map<Category>(newCategory);
+
+            if (addedCategory.Name.Length == 0)
+                throw new ArgumentException("Name can not be empty string");
+            else { 
             await _context.Categories.AddAsync(addedCategory);
             await _context.SaveChangesAsync();
+            }
 
             return new ServiceResponse<GetCategoryDto>()
             {
@@ -64,6 +82,28 @@ namespace server.Services
             {
                 Message = "Successfully deleted",
                 Success = true
+            };
+        }
+
+        public async Task<ServiceResponse<GetCategoryDto>> UpdateCategory(int id,CreateCategoryDto newCategory)
+        {
+            var categoryToUpdate = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (categoryToUpdate == null)
+                throw new ArgumentNullException(nameof(categoryToUpdate));
+
+            if (newCategory.Name.Length == 0)
+                throw new ArgumentException("Name can not be empty string");
+            else
+            {
+                categoryToUpdate.Name = newCategory.Name;
+                await _context.SaveChangesAsync();
+            }
+
+            return new ServiceResponse<GetCategoryDto>()
+            {
+                Success = true,
+                Message = "Successfully updated"
             };
         }
     }

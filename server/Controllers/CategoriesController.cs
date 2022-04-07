@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using server.Dtos;
 using server.Models;
 using server.Response;
@@ -11,6 +12,7 @@ namespace server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+   // [Authorize(Policy = "AdminAccess")]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -19,10 +21,17 @@ namespace server.Controllers
         {
             _categoryService = categoryService;
         }
+
         [HttpGet]
         public async Task<IActionResult> Get(int n)
         {
             return Ok(await _categoryService.GetCategories(n));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategory(int id)
+        {
+            return Ok(await _categoryService.GetCategory(id));
         }
 
         [HttpPost]
@@ -35,6 +44,12 @@ namespace server.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
             return Ok(await _categoryService.DeleteCategory(id));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCategory(int id,[FromBody] CreateCategoryDto newCategory)
+        {
+            return Ok(await _categoryService.UpdateCategory(id,newCategory));
         }
     }
 }

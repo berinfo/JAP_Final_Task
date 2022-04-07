@@ -12,6 +12,7 @@ namespace server
             CreateMap<Category, GetCategoryDto>();
             CreateMap<CreateCategoryDto, Category>();
             CreateMap<Ingredient, GetIngredientDto>();
+            CreateMap<AddIngredientDto, Ingredient>();
             CreateMap<Recipe, GetRecipeDto>();
             CreateMap<RecipeIngredients, GetRecipeIngredientsDto>();
             CreateMap<CreateRecipeDto, Recipe>().ReverseMap();

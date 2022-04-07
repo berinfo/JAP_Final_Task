@@ -10,7 +10,9 @@ namespace server.Services
     public interface ICategoryService
     {
         Task<ServiceResponse<List<GetCategoryDto>>> GetCategories(int n);
+        Task<ServiceResponse<GetCategoryDto>> GetCategory(int id);
         Task<ServiceResponse<GetCategoryDto>> CreateCategory(CreateCategoryDto newCategory);
-        Task<ServiceResponse<GetCategoryDto>> DeleteCategory(int n);
+        Task<ServiceResponse<GetCategoryDto>> DeleteCategory(int id);
+        Task<ServiceResponse<GetCategoryDto>> UpdateCategory(int id, CreateCategoryDto newCategory);
     }
 }
