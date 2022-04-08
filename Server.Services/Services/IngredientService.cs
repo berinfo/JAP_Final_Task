@@ -25,8 +25,8 @@ namespace server.Services
         public async Task<ServiceResponse<List<GetIngredientDto>>> GetIngredients(BaseSearch search)
         {
             var queryable = _context.Ingredients.AsQueryable();
-
-            if(search.SortOrder == "ASC")
+            
+            if (search.SortOrder == "ASC")
             {
                 switch (search.SortBy)
                 {
@@ -67,13 +67,18 @@ namespace server.Services
                         break;
                 }
             }
-            //if((search.IngredientsFilter.Name.Length > 0))
-            if (!string.IsNullOrEmpty(search.IngredientsFilter.Name))
-                queryable = queryable.Where(i => i.Name.ToLower().Contains(search.IngredientsFilter.Name.ToLower()));
+          
+            if(search.Name != null)
+            {
+                    queryable = queryable.Where(i => i.Name.ToLower().Contains(search.Name.ToLower()));
+            }
 
-            if (search.IngredientsFilter.MinQuant > 0 && search.IngredientsFilter.MaxQuant > 0)
-                queryable = queryable.Where(x => x.PurchaseQuantity > search.IngredientsFilter.MinQuant && x.PurchaseQuantity <
-                search.IngredientsFilter.MaxQuant);
+            if (search.MinQuant > 0 && search.MaxQuant > 0)
+                queryable = queryable.Where(x => x.PurchaseQuantity > search.MinQuant && x.PurchaseQuantity <
+                search.MaxQuant);
+            
+            if(search.UnitEnum != null)
+                queryable = queryable.Where(x => x.PurchaseUnit.Equals(search.UnitEnum));
 
             var toReturn = await queryable.Skip((int)search.Skip).Take((int)search.PageSize).ToListAsync();
             return new ServiceResponse<List<GetIngredientDto>>()

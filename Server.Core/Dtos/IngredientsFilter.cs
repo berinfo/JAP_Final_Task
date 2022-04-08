@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Server.Core.Dtos
 {
-    public class IngredientsFilter
+    public abstract class IngredientsFilter
     {
         public string Name { get; set; }
         public decimal? MinQuant { get; set; }
