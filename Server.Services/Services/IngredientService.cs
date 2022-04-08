@@ -22,24 +22,76 @@ namespace server.Services
             _mapper = mapper;
             _context = context;
         }
-        public async Task<ServiceResponse<List<GetIngredientDto>>> GetIngredients()
+        public async Task<ServiceResponse<List<GetIngredientDto>>> GetIngredients(BaseSearch search)
         {
-            var dbIngredients = await _context.Ingredients
-                .Select(c => _mapper.Map<GetIngredientDto>(c))
-                .ToListAsync();
+            var queryable = _context.Ingredients.AsQueryable();
 
+            if(search.SortOrder == "ASC")
+            {
+                switch (search.SortBy)
+                {
+                    case "name":
+                        queryable = queryable.OrderBy(x => x.Name);
+                        break;
+                    case "purchaseQuantity":
+                        queryable = queryable.OrderBy(x => x.PurchaseQuantity);
+                        break;
+                    case "purchasePrice":
+                        queryable = queryable.OrderBy(x => x.PurchasePrice);
+                        break;
+                    case "purchaseUnit":
+                        queryable = queryable.OrderBy(x => x.PurchaseUnit);
+                        break;
+                    default:
+                        queryable = queryable.OrderBy(x => x.Name);
+                        break;
+                }
+            } else
+            {
+                switch (search.SortBy)
+                {
+                    case "name":
+                        queryable = queryable.OrderByDescending(x => x.Name);
+                        break;
+                    case "purchaseQuantity":
+                        queryable = queryable.OrderByDescending(x => x.PurchaseQuantity);
+                        break;
+                    case "purchasePrice":
+                        queryable = queryable.OrderByDescending(x => x.PurchasePrice);
+                        break;
+                    case "purchaseUnit":
+                        queryable = queryable.OrderByDescending(x => x.PurchaseUnit);
+                        break;
+                    default:
+                        queryable = queryable.OrderByDescending(x => x.Name);
+                        break;
+                }
+            }
+            //if((search.IngredientsFilter.Name.Length > 0))
+            if (!string.IsNullOrEmpty(search.IngredientsFilter.Name))
+                queryable = queryable.Where(i => i.Name.ToLower().Contains(search.IngredientsFilter.Name.ToLower()));
+
+            if (search.IngredientsFilter.MinQuant > 0 && search.IngredientsFilter.MaxQuant > 0)
+                queryable = queryable.Where(x => x.PurchaseQuantity > search.IngredientsFilter.MinQuant && x.PurchaseQuantity <
+                search.IngredientsFilter.MaxQuant);
+
+            var toReturn = await queryable.Skip((int)search.Skip).Take((int)search.PageSize).ToListAsync();
             return new ServiceResponse<List<GetIngredientDto>>()
             {
-                Data = dbIngredients
+                Data = _mapper.Map<List<GetIngredientDto>>(toReturn)
             };
         }
+        //private static void Sort(BaseSearch search)
+        //{
+
+        //}
 
         public async Task<ServiceResponse<GetIngredientDto>> GetIngredient(int id)
         {
             var ingredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Id == id);
 
             if (ingredient == null)
-               throw new ArgumentNullException(nameof(ingredient));
+                throw new ArgumentNullException(nameof(ingredient));
 
             return new ServiceResponse<GetIngredientDto>()
             {
@@ -49,7 +101,7 @@ namespace server.Services
         }
         public async Task<ServiceResponse<GetIngredientDto>> DeleteIngredient(int id)
         {
-            var ingredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Id==id);
+            var ingredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Id == id);
 
             if (ingredient == null)
                 throw new ArgumentNullException(nameof(ingredient));
@@ -71,7 +123,7 @@ namespace server.Services
                 throw new ArgumentException("Name is required");
             if (newIngredient.PurchaseQuantity <= 0 || newIngredient.PurchasePrice <= 0)
                 throw new ArgumentException("Enter numbers greater than 0");
-           
+
             await _context.Ingredients.AddAsync(ingredientToAdd);
             await _context.SaveChangesAsync();
 
@@ -106,4 +158,5 @@ namespace server.Services
             };
         }
     }
+ 
 }

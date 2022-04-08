@@ -24,9 +24,9 @@ namespace server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] BaseSearch search)
         {
-            return Ok(await _ingredientService.GetIngredients());
+            return Ok(await _ingredientService.GetIngredients(search));
         }
 
         [HttpGet("{id}")]

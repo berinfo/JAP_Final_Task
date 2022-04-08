@@ -9,7 +9,7 @@ namespace server.Services
 {
     public interface IIngredientService
     {
-        Task<ServiceResponse<List<GetIngredientDto>>> GetIngredients();
+        Task<ServiceResponse<List<GetIngredientDto>>> GetIngredients(BaseSearch search);
         Task<ServiceResponse<GetIngredientDto>> GetIngredient(int id);
         Task<ServiceResponse<GetIngredientDto>> CreateIngredient(AddIngredientDto newIngredient);
         Task<ServiceResponse<GetIngredientDto>> DeleteIngredient(int id);

@@ -58,5 +58,23 @@ namespace server.Controllers
             }
             return Ok(res);
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRecipe(int id)
+        {
+            var res = await _recipeService.DeleteRecipe(id);
+            if(res == null)
+                return NotFound();
+            return Ok(res);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateRecipe(int id, CreateRecipeDto newRecipe)
+        {
+            var res = await _recipeService.UpdateRecipe(id, newRecipe);
+            if (res == null)
+                return NotFound();
+            return Ok(res);
+        }
     }
 }

@@ -12,5 +12,7 @@ namespace server.Services
         Task<ServiceResponse<GetRecipeDto>> CreateRecipe(CreateRecipeDto newRecipe);
         Task<ServiceResponse<IEnumerable<GetRecipeByCategoryDto>>> GetRecipesByCategory(int categoryId, int skip, int pageSize);
         Task<ServiceResponse<List<GetRecipeDto>>> SearchRecipes(int categoryId, string word );
+        Task<ServiceResponse<GetRecipeDto>> DeleteRecipe(int id);
+        Task<ServiceResponse<GetRecipeDto>> UpdateRecipe(int id, CreateRecipeDto newRecipe);
     }
 }

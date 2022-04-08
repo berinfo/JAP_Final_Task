@@ -136,5 +136,55 @@ namespace server.Services
                 Data = recipesToReturn
             };
         }
+        public async Task<ServiceResponse<GetRecipeDto>> DeleteRecipe(int id)
+        {
+            var recipeToDelete = await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
+
+            _context.Recipes.Remove(recipeToDelete);
+            await _context.SaveChangesAsync();
+
+            return new ServiceResponse<GetRecipeDto>()
+            {
+                Success = true,
+                Message = "Successfully deleted recipe"
+            };
+        }
+
+        public async Task<ServiceResponse<GetRecipeDto>> UpdateRecipe(int id, CreateRecipeDto newRecipe)
+        {
+            var recipeToUpdate = await _context.Recipes.Include(ri => ri.RecipeIngredients)
+                                                        .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (newRecipe.Name.Length == 0 || newRecipe.Description.Length == 0)
+                    throw new ArgumentException("Name or description are empty");
+            if (newRecipe.RecipeIngredients.Count == 0)
+                throw new ArgumentException("Recipe must have ingredients");
+            if (newRecipe.RecipeIngredients.GroupBy(x => x.IngredientId).Any(x => x.Count() > 1))
+                throw new ArgumentException("Can not add same ingredient");
+            
+            var ingredients = newRecipe.RecipeIngredients.Select(ri => new RecipeIngredients
+            {
+                RecipeId = recipeToUpdate.Id,
+                IngredientId = ri.IngredientId,
+                Quantity = ri.Quantity,
+                Unit = ri.Unit,
+            }).ToList();
+
+            recipeToUpdate.Name = newRecipe.Name;
+            recipeToUpdate.CategoryId = newRecipe.CategoryId;
+            recipeToUpdate.Description = newRecipe.Description;
+            recipeToUpdate.RecipeIngredients = ingredients;
+            
+            await _context.SaveChangesAsync();
+           
+            var recipeToReturn = _mapper.Map<GetRecipeDto>(recipeToUpdate);
+            
+            return new ServiceResponse<GetRecipeDto>()
+            {
+                Data = recipeToReturn,
+                Message = "Successfully updated",
+                Success = true
+            };
+        }
     }
 }
