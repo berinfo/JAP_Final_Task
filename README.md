@@ -1,9 +1,10 @@
-# JapTask1
+# Jap final task
 
-Version 1.1
+Version 1.2
 
 This project provides to user recipe tracking. Application provides to create recipe, view recipe, search by any textual attribute or
-view recipes. You can see categories with their recipes and cost.
+view recipes. You can see categories with their recipes and cost. There are two types of roles, regular user and admin.
+Admin has the ability to add, delete or update, while regular user can only view details.
 
 Unit tests are added and stored procedures.
 
@@ -13,7 +14,7 @@ React JS, asp.net, material Ui
 
 # how to clone and start project:
 
-1.git clone https://github.com/berinfo/JapTask2.git 2. -enter cd client and enter npm install, to install neccessary packages
+1.git clone https://github.com/berinfo/JAP_Final_Task.git 2. -enter cd client and enter npm install, to install neccessary packages
 -enter npm start
 3.- enter cd server
 
@@ -23,9 +24,12 @@ React JS, asp.net, material Ui
 
 # About
 
-Ingredients, categories and user are seeded in DB,
+Ingredients, categories, recipes and user are seeded in DB,
 
 ## user
 
 username: user123
+password: test123
+
+username: admin
 password: test123

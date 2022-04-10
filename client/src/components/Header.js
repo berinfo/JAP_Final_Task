@@ -49,7 +49,7 @@ const Header = () => {
           <Button onClick={() => navigate("/recipes")}>Recipes</Button>
           {isAdmin && (
             <Button onClick={() => navigate("/addrecipe")} sx={style.btn}>
-              Add
+              Add recipe
             </Button>
           )}
           <Button sx={style.btn} onClick={logOut}>

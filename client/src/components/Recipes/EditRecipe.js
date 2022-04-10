@@ -58,7 +58,11 @@ const EditRecipe = () => {
   async function editRecipe(e) {
     e.preventDefault();
     await axios
-      .put(`https://localhost:5001/Recipes/${id}`, input)
+      .put(`https://localhost:5001/Recipes/${id}`, input, {
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      })
       .then((res) => {
         setMessage(res.data.message);
         setOpenSnackbar(true);

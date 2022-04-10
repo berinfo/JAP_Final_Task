@@ -8060,9 +8060,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\BERINFO\\JAP_Final_Task\\server\\Server.Api.csproj",
-      "projectName": "Server.Api",
-      "projectPath": "C:\\Users\\BERINFO\\JAP_Final_Task\\server\\Server.Api.csproj",
+      "projectUniqueName": "C:\\Users\\BERINFO\\JAP_Final_Task\\server\\server.Api.csproj",
+      "projectName": "server.Api",
+      "projectPath": "C:\\Users\\BERINFO\\JAP_Final_Task\\server\\server.Api.csproj",
       "packagesPath": "C:\\Users\\BERINFO\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\BERINFO\\JAP_Final_Task\\server\\obj\\",
       "projectStyle": "PackageReference",
