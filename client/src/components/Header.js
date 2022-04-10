@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import { Box, Typography, Button } from "@mui/material";
 
@@ -25,6 +26,8 @@ const style = {
 };
 
 const Header = () => {
+  const token = sessionStorage.getItem("token");
+  const isAdmin = useSelector((state) => state.states.isAdmin);
   const navigate = useNavigate();
   function logOut() {
     sessionStorage.removeItem("token");
@@ -36,14 +39,24 @@ const Header = () => {
         <FoodBankIcon />
         <Typography>Normative Calculator App</Typography>
       </Box>
-      <Box>
-        <Button onClick={() => navigate("/addrecipe")} sx={style.btn}>
-          Add
-        </Button>
-        <Button sx={style.btn} onClick={logOut}>
-          Logout
-        </Button>
-      </Box>
+      {token && (
+        <Box>
+          {isAdmin && (
+            <Button onClick={() => navigate("/ingredients")}>
+              Ingredients
+            </Button>
+          )}
+          <Button onClick={() => navigate("/recipes")}>Recipes</Button>
+          {isAdmin && (
+            <Button onClick={() => navigate("/addrecipe")} sx={style.btn}>
+              Add
+            </Button>
+          )}
+          <Button sx={style.btn} onClick={logOut}>
+            Logout
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

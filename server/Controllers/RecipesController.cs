@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace server.Controllers
 {
-  //  [Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class RecipesController : ControllerBase
@@ -31,6 +31,7 @@ namespace server.Controllers
             }
             return Ok(res);
         }
+
         [HttpPost]
         public async Task<IActionResult> Post(CreateRecipeDto newRecipe)
         {
@@ -49,9 +50,9 @@ namespace server.Controllers
         }
 
         [HttpGet("Search")]
-        public async Task<IActionResult> SearchRecipes(int categoryId, string word)
+        public async Task<IActionResult> SearchRecipes(string word)
         {
-            var res = await _recipeService.SearchRecipes(categoryId, word);
+            var res = await _recipeService.SearchRecipes(word);
             if(res == null)
             {
                 return NotFound();
@@ -59,7 +60,7 @@ namespace server.Controllers
             return Ok(res);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRecipe(int id)
         {
             var res = await _recipeService.DeleteRecipe(id);
@@ -68,12 +69,23 @@ namespace server.Controllers
             return Ok(res);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRecipe(int id, CreateRecipeDto newRecipe)
         {
             var res = await _recipeService.UpdateRecipe(id, newRecipe);
             if (res == null)
                 return NotFound();
+            return Ok(res);
+        }
+
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetRecipes(int skip, int pageSize)
+        {
+            var res = await _recipeService.GetRecipes(skip, pageSize);
+            if (res == null)
+            {
+                return NotFound();
+            }
             return Ok(res);
         }
     }

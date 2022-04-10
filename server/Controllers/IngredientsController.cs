@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 namespace server.Controllers
 {
  //   [Authorize(Policy = "AdminAccess")]
- //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class IngredientsController : ControllerBase
@@ -29,24 +28,33 @@ namespace server.Controllers
             return Ok(await _ingredientService.GetIngredients(search));
         }
 
+        [HttpGet("getAll")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _ingredientService.GetAllIngredients());
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetIngredient(int id)
         {
             return Ok(await _ingredientService.GetIngredient(id));
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIngredient(int id)
         {
             return Ok(await _ingredientService.DeleteIngredient(id));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateIngredient(AddIngredientDto newIngredient)
         {
             return Ok(await _ingredientService.CreateIngredient(newIngredient));
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateIngredient(int id, AddIngredientDto newIngredient)
         {

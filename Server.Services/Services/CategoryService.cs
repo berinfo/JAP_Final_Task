@@ -48,7 +48,7 @@ namespace server.Services
                 Success = true
             };
         }
-
+        
         public async Task<ServiceResponse<GetCategoryDto>> CreateCategory(CreateCategoryDto newCategory)
         {
             var addedCategory = _mapper.Map<Category>(newCategory);

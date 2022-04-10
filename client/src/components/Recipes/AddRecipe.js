@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { japActions } from "../store";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -10,7 +8,9 @@ import {
   Typography,
   MenuItem,
   Divider,
+  Snackbar,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const style = {
   container: {
@@ -21,16 +21,18 @@ const style = {
 };
 
 const AddRecipe = () => {
-  const dispatch = useDispatch();
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-  const [units, setUnits] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [prepareIngredients, setPrepareIngredients] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [input, setInput] = useState({
     name: "",
     description: "",
     categoryId: "1",
+    recommSellingPrice: 0,
     recipeIngredients: [],
   });
   const [oneIng, setOneIng] = useState({
@@ -39,20 +41,36 @@ const AddRecipe = () => {
     unit: "",
   });
 
+  const pickUnits = ["g", "ml", "kg", "l", "pcs"];
+
   useEffect(() => {
     getIngredients();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    async function getCategories() {
+      //https://localhost:44305/Category/GetAll?skipData=0&limitData=2
+      await axios
+        .get(`https://localhost:5001/Categories?n=20`)
+        .then((res) => {
+          setCategories(res.data.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+    getCategories();
+    // eslint-disable-next-line
+  }, []);
   async function getIngredients() {
     await axios
-      .get("https://localhost:5001/Ingredients")
+      .get("https://localhost:5001/Ingredients/getAll")
       .then((res) => {
-        dispatch(japActions.setIngredients(res.data.data));
+        setIngredients(res.data.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.message));
   }
-  const ingredients = useSelector((state) => state.states.ingredients);
-  const categories = useSelector((state) => state.states.categories);
 
   async function create(e) {
     e.preventDefault();
@@ -62,16 +80,18 @@ const AddRecipe = () => {
           Authorization: `bearer ${token}`,
         },
       })
-      .then(() => {
-        setMessage("Created successfully");
+      .then((res) => {
+        setMessage(res.data.message);
+        setOpenSnackbar(true);
         setTimeout(() => {
           navigate("/categories");
-        }, 500);
-      });
+        }, 1000);
+      })
+      .catch((err) => console.log(err.message));
   }
 
   function onChangeCategory(e) {
-    setInput({ ...input, category: e.target.value });
+    setInput({ ...input, categoryId: e.target.value });
   }
   function onChangeName(e) {
     setInput({ ...input, name: e.target.value });
@@ -87,22 +107,22 @@ const AddRecipe = () => {
 
   function ingredientChangeHandler(e) {
     setOneIng({ ...oneIng, ingredientId: e.target.value });
-    if (e.target.value == 1 || e.target.value == 5) {
-      setUnits(["ml", "l"]);
-    }
-    if (e.target.value == 6) {
-      setUnits(["pcs"]);
-    }
-    if (
-      e.target.value == 2 ||
-      e.target.value == 3 ||
-      e.target.value == 4 ||
-      e.target.value == 7
-    ) {
-      setUnits(["g", "kg"]);
-    }
   }
-
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+  let ingredientsPreview = input.recipeIngredients.map((re) => {
+    return {
+      ...re,
+      name: ingredients.filter((id) => id.id === re.ingredientId)[0].name,
+    };
+  });
+  const onlyPositive = (e) => {
+    ["e", "E", "-", "+"].includes(e.key) && e.preventDefault();
+  };
   return (
     <Box sx={style.container} component="form" onSubmit={create}>
       <Typography>Name:</Typography>
@@ -165,7 +185,7 @@ const AddRecipe = () => {
         onChange={(e) => setOneIng({ ...oneIng, quantity: e.target.value })}
       />
       <TextField label="Unit" select fullWidth onChange={onChangeIngUnit}>
-        {units.map((item, i) => {
+        {pickUnits.map((item, i) => {
           return (
             <MenuItem key={i} value={item}>
               {item}
@@ -173,31 +193,45 @@ const AddRecipe = () => {
           );
         })}
       </TextField>
+
+      <TextField
+        type="number"
+        label="recommended price"
+        value={input.recommSellingPrice}
+        fullWidth
+        sx={{ mt: 2 }}
+        onKeyDown={onlyPositive}
+        onChange={(e) =>
+          setInput({ ...input, recommSellingPrice: e.target.value })
+        }
+      />
       <Button onClick={addIngredientToArr} disabled={oneIng.unit === ""}>
         Add ingredient
       </Button>
-
       {input.recipeIngredients.length > 0 &&
-        input.recipeIngredients.map((item, i) => {
-          return (
-            <Box key={item.ingredientId + i}>
-              {item.ingredientId === 1 && <Typography>Oil</Typography>}
-              {item.ingredientId === 2 && <Typography>Flour</Typography>}
-              {item.ingredientId === 3 && <Typography>Sugar</Typography>}
-              {item.ingredientId === 4 && <Typography>Salt</Typography>}
-              {item.ingredientId === 5 && <Typography>Olive Oil</Typography>}
-              {item.ingredientId === 6 && <Typography>Eggs</Typography>}
-              {item.ingredientId === 7 && <Typography>Chicken meat</Typography>}
-              {item.quantity + item.unit}
-            </Box>
-          );
-        })}
-      <Typography sx={{ color: "green" }}>{message}</Typography>
+        ingredientsPreview.map((item, i) => (
+          <Typography
+            key={i}
+            onClick={() => {
+              ingredientsPreview.splice(i, 1);
+              input.recipeIngredients.splice(i, 1);
+            }}
+          >
+            {item.name} - {item.quantity} {item.unit} <DeleteIcon />
+          </Typography>
+        ))}
+
       {input.recipeIngredients.length > 0 && (
-        <Button fullWidth variant="contained" type="submit">
+        <Button fullWidth variant="contained" type="submit" sx={{ mt: 4 }}>
           Create recipe
         </Button>
       )}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={1000}
+        onClose={handleCloseSnackbar}
+        message={message}
+      />
     </Box>
   );
 };

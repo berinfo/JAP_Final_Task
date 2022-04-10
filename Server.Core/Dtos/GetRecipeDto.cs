@@ -10,6 +10,6 @@ namespace server.Dtos
         public decimal Price { get; set; }
         public GetCategoryDto Category { get; set; } 
         public List<GetRecipeIngredientsDto> RecipeIngredients { get; set; }
-
+        public decimal RecommSellingPrice { get; set; }
     }
 }

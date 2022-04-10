@@ -25,7 +25,7 @@ namespace server.Services
         public async Task<ServiceResponse<List<GetIngredientDto>>> GetIngredients(BaseSearch search)
         {
             var queryable = _context.Ingredients.AsQueryable();
-            
+
             if (search.SortOrder == "ASC")
             {
                 switch (search.SortBy)
@@ -46,7 +46,8 @@ namespace server.Services
                         queryable = queryable.OrderBy(x => x.Name);
                         break;
                 }
-            } else
+            }
+            else
             {
                 switch (search.SortBy)
                 {
@@ -67,18 +68,18 @@ namespace server.Services
                         break;
                 }
             }
-          
-            if(search.Name != null)
+
+            if (search.Name != null)
             {
-                    queryable = queryable.Where(i => i.Name.ToLower().Contains(search.Name.ToLower()));
+                queryable = queryable.Where(i => i.Name.ToLower().Contains(search.Name.ToLower()));
             }
 
             if (search.MinQuant > 0 && search.MaxQuant > 0)
                 queryable = queryable.Where(x => x.PurchaseQuantity > search.MinQuant && x.PurchaseQuantity <
                 search.MaxQuant);
-            
-            if(search.UnitEnum != null)
-                queryable = queryable.Where(x => x.PurchaseUnit.Equals(search.UnitEnum));
+
+            //if (search.UnitEnum)
+            //    queryable = queryable.Where(x => x.PurchaseUnit.Equals(search.UnitEnum));
 
             var toReturn = await queryable.Skip((int)search.Skip).Take((int)search.PageSize).ToListAsync();
             return new ServiceResponse<List<GetIngredientDto>>()
@@ -154,6 +155,7 @@ namespace server.Services
             ingredientToUpdate.Name = newIngredient.Name;
             ingredientToUpdate.PurchaseQuantity = newIngredient.PurchaseQuantity;
             ingredientToUpdate.PurchasePrice = newIngredient.PurchasePrice;
+            ingredientToUpdate.PurchaseUnit = newIngredient.PurchaseUnit;
 
             await _context.SaveChangesAsync();
             return new ServiceResponse<GetIngredientDto>()
@@ -162,6 +164,17 @@ namespace server.Services
                 Message = "Successfully updated"
             };
         }
+        public async Task<ServiceResponse<List<GetIngredientDto>>> GetAllIngredients()
+        {
+            var dbIngredients = await _context.Ingredients
+                .Select(c => _mapper.Map<GetIngredientDto>(c))
+                .ToListAsync();
+
+            return new ServiceResponse<List<GetIngredientDto>>()
+            {
+                Data = dbIngredients
+            };
+        }
     }
- 
+
 }

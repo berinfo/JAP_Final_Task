@@ -34,18 +34,21 @@ namespace server.Controllers
             return Ok(await _categoryService.GetCategory(id));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto newCategory)
         {
             return Ok(await _categoryService.CreateCategory(newCategory));
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             return Ok(await _categoryService.DeleteCategory(id));
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id,[FromBody] CreateCategoryDto newCategory)
         {

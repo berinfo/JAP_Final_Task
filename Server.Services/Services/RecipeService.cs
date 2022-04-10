@@ -43,6 +43,7 @@ namespace server.Services
                     Name = dbRecipeDto.Name,
                     Description = dbRecipeDto.Description,
                     Price = Calculator.RecipeTotalCost(dbRecipe),
+                    RecommSellingPrice = dbRecipeDto.RecommSellingPrice,
                     Category = dbRecipeDto.Category,
                     RecipeIngredients = dbRecipeDto.RecipeIngredients
                 };
@@ -83,7 +84,8 @@ namespace server.Services
 
             return new ServiceResponse<GetRecipeDto>()
             {
-                Data = _mapper.Map<GetRecipeDto>(recipe)
+                Data = _mapper.Map<GetRecipeDto>(recipe),
+                Message = "Recipe successfully created"
             };
         }
         public async Task<ServiceResponse<IEnumerable<GetRecipeByCategoryDto>>> GetRecipesByCategory(int categoryId, int skip, int pageSize)
@@ -119,22 +121,30 @@ namespace server.Services
             }
 
         }
-        public async Task<ServiceResponse<List<GetRecipeDto>>> SearchRecipes(int categoryId, string word)
+        public async Task<ServiceResponse<IEnumerable<GetRecipeByCategoryDto>>> SearchRecipes(string word)
         {
+            var serviceResponse = new ServiceResponse<IEnumerable<GetRecipeByCategoryDto>>();
             var dbRecipes = await _context.Recipes
                 .Include(i => i.RecipeIngredients)
                 .ThenInclude(r => r.Ingredient)
-                .Where(c => c.CategoryId == categoryId)
                // .Where(r => r.Name == word)
-                .Where(r => r.Name.Contains(word) || r.Description.Contains(word) || r.RecipeIngredients.Any(reci => reci.Ingredient.Name.Contains(word)))
+                .Where(r => r.Name.ToLower().Contains(word.ToLower()) ||
+                            r.Description.ToLower().Contains(word.ToLower()) ||
+                            r.RecipeIngredients.Any(reci => reci.Ingredient.Name.ToLower().Contains(word.ToLower())))
                 .ToListAsync();
 
-            var recipesToReturn = dbRecipes.Select(c => _mapper.Map<GetRecipeDto>(c)).ToList();
-
-            return new ServiceResponse<List<GetRecipeDto>>()
+            // var recipesToReturn = dbRecipes.Select(c => _mapper.Map<GetRecipeDto>(c)).ToList();
+            var recipesToReturn = dbRecipes.Select(r => new GetRecipeByCategoryDto
             {
-                Data = recipesToReturn
-            };
+                Id = r.Id,
+                Name = r.Name,
+                TotalCost = Calculator.RecipeTotalCost(r)
+            });
+
+            serviceResponse.Data = recipesToReturn.OrderBy(r => r.TotalCost).ToList();
+            serviceResponse.Success = true;
+            return serviceResponse;
+        
         }
         public async Task<ServiceResponse<GetRecipeDto>> DeleteRecipe(int id)
         {
@@ -153,6 +163,7 @@ namespace server.Services
         public async Task<ServiceResponse<GetRecipeDto>> UpdateRecipe(int id, CreateRecipeDto newRecipe)
         {
             var recipeToUpdate = await _context.Recipes.Include(ri => ri.RecipeIngredients)
+                                                        .ThenInclude(r => r.Ingredient)
                                                         .FirstOrDefaultAsync(r => r.Id == id);
 
             if (newRecipe.Name.Length == 0 || newRecipe.Description.Length == 0)
@@ -174,6 +185,7 @@ namespace server.Services
             recipeToUpdate.CategoryId = newRecipe.CategoryId;
             recipeToUpdate.Description = newRecipe.Description;
             recipeToUpdate.RecipeIngredients = ingredients;
+            recipeToUpdate.RecommSellingPrice = newRecipe.RecommSellingPrice;
             
             await _context.SaveChangesAsync();
            
@@ -185,6 +197,35 @@ namespace server.Services
                 Message = "Successfully updated",
                 Success = true
             };
+        }
+        public async Task<ServiceResponse<IEnumerable<GetRecipeByCategoryDto>>> GetRecipes(int skip, int pageSize)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<GetRecipeByCategoryDto>>();
+
+            var dbRecipes = await _context.Recipes
+               .Include(i => i.RecipeIngredients)
+               .ThenInclude(ing => ing.Ingredient)
+               .Include(r => r.Category)
+               .ToListAsync();
+
+            if (dbRecipes.Count != 0)
+            {
+                var recipesToReturn = dbRecipes.Select(r => new GetRecipeByCategoryDto
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    TotalCost = Calculator.RecipeTotalCost(r)
+                });
+
+                serviceResponse.Data = recipesToReturn.OrderBy(r => r.TotalCost).Skip(skip).Take(pageSize).ToList();
+                serviceResponse.Success = true;
+                return serviceResponse;
+            }
+            else
+            {
+                throw new Exception();
+            }
+
         }
     }
 }

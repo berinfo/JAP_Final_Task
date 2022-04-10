@@ -18,6 +18,8 @@ const style = {
     border: "1px solid purple",
     borderRadius: "5px",
     margin: "5px 5px",
+    display: "flex",
+    justifyContent: "space-around",
   },
   btn: {
     variant: "contained",
@@ -31,7 +33,6 @@ const style = {
 const ListComponent = (props) => {
   const navigate = useNavigate();
   const recipes = useSelector((state) => state.states.recipes);
-  const [loadCat, setLoadCat] = useState(2);
 
   return (
     <Box sx={style.container}>
@@ -43,14 +44,14 @@ const ListComponent = (props) => {
               <ListItem
                 key={item.id}
                 sx={style.item}
-                onClick={() => navigate(`/recipes/${item.id}`)}
+                onClick={() => navigate(`/categories/${item.id}`)}
               >
                 {item.name}
               </ListItem>
             );
           })}
       </List>
-      <List sx={style.list}>
+      {/* <List sx={style.list}>
         {props.recipeView &&
           recipes &&
           recipes.map((item) => {
@@ -60,11 +61,11 @@ const ListComponent = (props) => {
                 sx={style.item}
                 onClick={() => navigate(`/recipe/${item.id}`)}
               >
-                {item.name} || {item.totalCost}$
+                {item.name} || {item.totalCost.toFixed(2)}$
               </ListItem>
             );
           })}
-      </List>
+      </List> */}
       {!props.recipeView && (
         <Button
           sx={style.btn}

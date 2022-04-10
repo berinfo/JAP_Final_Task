@@ -1,0 +1,199 @@
+{
+	"info": {
+		"_postman_id": "55d501d4-505e-46c9-8293-0f9d52b0a1c2",
+		"name": "jap",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get200",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsInJvbGUiOnRydWUsIm5iZiI6MTY0OTYxOTM3MiwiZXhwIjoxNjQ5NzA1NzcyLCJpYXQiOjE2NDk2MTkzNzJ9.s2il6W8GAGv4JrYNx9D4mG-a-w-d1wXc1RsfLSV7asM8mi5Y4NPWMeE-OFSCbXIz8PxaYqG4TWaSJhKC14RU5A",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\":\"test123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/Recipes/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Recipes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "recipe200params",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsInJvbGUiOnRydWUsIm5iZiI6MTY0OTYyMDUxMywiZXhwIjoxNjQ5NzA2OTEzLCJpYXQiOjE2NDk2MjA1MTN9.BKbKQbzHErD2kmd6CeJtA-gXRSuCSiBB5rWKXYxwMg0mX42wxYxDjntdVTjyfImYZK1YBfjPsk1NUjgwOuHz_A",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:5001/Recipes/GetAll?skip=0&pagesize=5",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Recipes",
+						"GetAll"
+					],
+					"query": [
+						{
+							"key": "skip",
+							"value": "0"
+						},
+						{
+							"key": "pagesize",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create400",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsInJvbGUiOnRydWUsIm5iZiI6MTY0OTYyMDUxMywiZXhwIjoxNjQ5NzA2OTEzLCJpYXQiOjE2NDk2MjA1MTN9.BKbKQbzHErD2kmd6CeJtA-gXRSuCSiBB5rWKXYxwMg0mX42wxYxDjntdVTjyfImYZK1YBfjPsk1NUjgwOuHz_A",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"name\",\r\n    \"description\": \"opis\",\r\n    \"categoryId\": \"1\",\r\n    \"recommSellingPrice\": \"10\",\r\n    \"recipeIngredients\": [\r\n        {\r\n            \"ingredientId\":\"5\",\r\n            \"quantity\":\"5\",\r\n            \"unit\":\"g\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/Recipes",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get401",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/Recipes/5",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Recipes",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create200",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsInJvbGUiOnRydWUsIm5iZiI6MTY0OTYyMDUxMywiZXhwIjoxNjQ5NzA2OTEzLCJpYXQiOjE2NDk2MjA1MTN9.BKbKQbzHErD2kmd6CeJtA-gXRSuCSiBB5rWKXYxwMg0mX42wxYxDjntdVTjyfImYZK1YBfjPsk1NUjgwOuHz_A",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"name\",\r\n    \"description\": \"opis\",\r\n    \"categoryId\": \"1\",\r\n    \"recommSellingPrice\": \"10\",\r\n    \"recipeIngredients\": [\r\n        {\r\n            \"ingredientId\":\"5\",\r\n            \"quantity\":\"5\",\r\n            \"unit\":\"g\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/Recipes",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create401",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"name\",\r\n    \"description\": \"opis\",\r\n    \"categoryId\": \"1\",\r\n    \"recommSellingPrice\": \"10\",\r\n    \"recipeIngredients\": [\r\n        {\r\n            \"ingredientId\":\"5\",\r\n            \"quantity\":\"5\",\r\n            \"unit\":\"g\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/Recipes",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Recipes"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

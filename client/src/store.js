@@ -3,6 +3,7 @@ import { createSlice, configureStore } from "@reduxjs/toolkit";
 const japSlice = createSlice({
   name: "states",
   initialState: {
+    isAdmin: false,
     user: false,
     recipes: [],
     ingredients: [],
@@ -21,6 +22,9 @@ const japSlice = createSlice({
     },
     setRecipe(state, { payload }) {
       state.recipe = payload;
+    },
+    setAdmin(state, { payload }) {
+      state.isAdmin = payload;
     },
   },
 });

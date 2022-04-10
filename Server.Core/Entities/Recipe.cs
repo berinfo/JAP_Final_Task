@@ -10,5 +10,6 @@ namespace server.Models
         public int CategoryId { get; set; }
         public Category Category { get; set; }
         public List<RecipeIngredients> RecipeIngredients { get; set; }
+        public decimal RecommSellingPrice { get; set; } = 0;
     }
 }
