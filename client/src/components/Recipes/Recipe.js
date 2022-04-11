@@ -104,12 +104,13 @@ const Recipe = () => {
         {recipe.recipeIngredients &&
           recipe.recipeIngredients.map((item, i) => {
             return (
-              <Typography key={item.quantity + i}>
+              <Typography key={item.quantity + i} sx={style.recipeHeading}>
                 {item.ingredient.name} {item.quantity} {item.unit}
               </Typography>
             );
           })}
       </Box>
+      <Divider />
       <Typography sx={style.recipeHeading}>
         Total:{recipe?.price?.toFixed(2)}$
       </Typography>

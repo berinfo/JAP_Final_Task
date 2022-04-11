@@ -35,6 +35,7 @@ const AddRecipe = () => {
     recommSellingPrice: 0,
     recipeIngredients: [],
   });
+  const [isRemoved, setIsRemoved] = useState(false);
   const [oneIng, setOneIng] = useState({
     ingredientId: 0,
     quantity: 1,
@@ -193,7 +194,6 @@ const AddRecipe = () => {
           );
         })}
       </TextField>
-
       <TextField
         type="number"
         label="recommended price"
@@ -205,7 +205,10 @@ const AddRecipe = () => {
           setInput({ ...input, recommSellingPrice: e.target.value })
         }
       />
-      <Button onClick={addIngredientToArr} disabled={oneIng.unit === ""}>
+      <Button
+        onClick={addIngredientToArr}
+        disabled={oneIng.unit === "" || oneIng.ingredientId === ""}
+      >
         Add ingredient
       </Button>
       {input.recipeIngredients.length > 0 &&
@@ -215,12 +218,12 @@ const AddRecipe = () => {
             onClick={() => {
               ingredientsPreview.splice(i, 1);
               input.recipeIngredients.splice(i, 1);
+              setIsRemoved(!isRemoved);
             }}
           >
             {item.name} - {item.quantity} {item.unit} <DeleteIcon />
           </Typography>
         ))}
-
       {input.recipeIngredients.length > 0 && (
         <Button fullWidth variant="contained" type="submit" sx={{ mt: 4 }}>
           Create recipe
